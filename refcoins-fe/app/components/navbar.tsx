@@ -15,8 +15,8 @@ function NavBar() {
   </div>
    
   <div className="navbar-end"> 
-  <Link href="/">Home</Link>
-  <button className="btn btn-sm bg-blue-600 border-none text-white mx-5">Add Property</button>
+    <Link href="/">Home</Link>
+    <Link href="/admin" className="btn btn-sm bg-blue-600 border-none text-white mx-5">Admin Dashboard</Link>
   </div>
 </div>
   )
