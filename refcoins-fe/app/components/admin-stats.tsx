@@ -1,6 +1,20 @@
-import React from 'react';
+'use client'
+
+import { usePropertyStore } from "@/store/property";
+import { useEffect } from "react";
 
 function AdminStats() {
+
+  const fetchPropertyCount = usePropertyStore(state => state.fetchPropertyCount)
+  const setPageSize = usePropertyStore(state => state.setPageSize)
+  const propertyCount = usePropertyStore(state => state.propertyCount)
+  setPageSize
+  useEffect(()=>{
+    setPageSize(8)
+    fetchPropertyCount()
+    
+  }, [])
+
   return (
     <div className="stats shadow stats-vertical px-10">
       <div className="stat">
@@ -19,8 +33,8 @@ function AdminStats() {
             ></path>
           </svg>
         </div>
-        <div className="stat-title">Downloads</div>
-        <div className="stat-value">31K</div>
+        <div className="stat-title">Total Properties</div>
+        <div className="stat-value">{propertyCount}</div>
         <div className="stat-desc">Jan 1st - Feb 1st</div>
       </div>
 

@@ -9,7 +9,10 @@ function PropertyItems() {
   const properties = usePropertyStore(state => state.properties)
   const loading = usePropertyStore(state => state.loading)
   const propertyCount = usePropertyStore(state => state.totalPages)
+  const setPageSize = usePropertyStore(state => state.setPageSize)
+  
   useEffect(()=>{
+    setPageSize(4)
     fetchProperties()
     fetchPropertyCount()
   }, [])

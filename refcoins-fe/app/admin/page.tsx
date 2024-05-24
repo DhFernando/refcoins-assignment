@@ -1,10 +1,13 @@
- import AddNewProperty from '../components/addNewProperty'
+ import AddNewProperty from '../components/add-new-property'
 import AdminPropertyTable from '../components/admin-property-table'
 import AdminStats from '../components/admin-stats'
+import FileUpload from '../components/FileUpload'
+import Paginator from '../components/Home/paginator'
 
 function AddProperty() {
   return (
     <div className='px-6'>
+       <FileUpload />
       <div className='flex bg-gray-100 py-5 rounded-md pl-5 mb-2'>
           <h1>Some Filters are here</h1>
          <AddNewProperty />
@@ -15,6 +18,9 @@ function AddProperty() {
         </div>
         <AdminPropertyTable />
         
+      </div>
+      <div className=' flex justify-center'>
+        <Paginator />
       </div>
     </div>
   )

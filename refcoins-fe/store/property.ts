@@ -12,8 +12,9 @@ type PropertyStore = {
     loading: boolean;
     totalPages: number;
     error: string | null; // Specify the type of `error` explicitly
-    fetchProperties: (page?: number, filters?: FilterFormData ) => Promise<void>; // Updated function signature
+    fetchProperties: (page?: number, filters?: FilterFormData, pageSize?: number) => Promise<void>; // Updated function signature
     fetchPropertyCount: () => Promise<void>; // No arguments needed for this function
+    setPageSize:(num?: number)=> void;
 };
 
 
@@ -25,11 +26,11 @@ type PropertyStore = {
     totalPages: 0,
     loading: false,
     error: null,
-    fetchProperties: async (page?: number, filters?: FilterFormData) => {
+    fetchProperties: async (page?: number, filters?: FilterFormData, pageSize?: number) => {
         set({ loading: true, error: null });
         try {
           const currentPage = page !== undefined ? page : get().page;
-          const currentPageSize = get().pageSize;
+          const currentPageSize = pageSize !== undefined ? pageSize :  get().pageSize;
           let url = `http://localhost:3000/property?page=${currentPage}&pageSize=${currentPageSize}`;
       
           // If filters are provided, add them to the URL
@@ -49,6 +50,10 @@ type PropertyStore = {
           set({ error: error.message, loading: false });
         }
       },
+
+    setPageSize:(size?: number)=>{
+      set((state) => ({pageSize: size })); 
+    },
       
     fetchPropertyCount: async () => {
         set({ loading: true, error: null });
