@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
@@ -12,9 +12,14 @@ export class PropertyController {
     return await this.propertyService.create(createPropertyDto);
   }
 
+  @Get('totalPropertyCount')
+  async totalPropertyCount() {
+    return await this.propertyService.totalPropertyCount()
+  }
+
   @Get()
-  async findAll() {
-    return await this.propertyService.findAll();
+  async findAll( @Query('page', ParseIntPipe) page: number = 1, @Query('pageSize', ParseIntPipe) pageSize: number = 3 ) {
+    return await this.propertyService.findAll(page, pageSize);
   }
 
   @Get(':id')

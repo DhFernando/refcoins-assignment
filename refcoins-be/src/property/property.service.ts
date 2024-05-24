@@ -19,8 +19,16 @@ export class PropertyService {
     });
   }
 
-  async findAll(): Promise<Property[]> {
-    return this.prisma.property.findMany();
+  async findAll(page: number = 1, pageSize: number = 4): Promise<Property[]> {  
+    const skip = (page - 1) * pageSize;
+    return this.prisma.property.findMany({
+      take: pageSize,
+      skip: skip,
+    });
+  }
+   
+  async totalPropertyCount(): Promise<number> {  
+    return await this.prisma.property.count();
   }
 
   async findOne(id: string): Promise<Property> {
