@@ -18,8 +18,14 @@ export class PropertyController {
   }
 
   @Get()
-  async findAll( @Query('page', ParseIntPipe) page: number = 1, @Query('pageSize', ParseIntPipe) pageSize: number = 3 ) {
-    return await this.propertyService.findAll(page, pageSize);
+  async findAll( 
+    @Query('page', ParseIntPipe) page: number = 1, 
+    @Query('pageSize', ParseIntPipe) pageSize: number = 3,
+    @Query('type') type: string, // Type filter
+    @Query('status') status: string, // Status filter
+    @Query('location') location: string,
+  ) {
+    return await this.propertyService.findAll(page, pageSize,type,status, location);
   }
 
   @Get(':id')

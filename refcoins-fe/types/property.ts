@@ -6,8 +6,17 @@ export type Property = {
     location: string;
     description: string;
     price: number;
-    type: string;
-    status: string;
+    type: PropertyType;
+    status: PropertyStatus;
     area: number;
   };
+
+export enum PropertyType {
+    SingleFamily = "SingleFamily",
+    Villa = "Villa",
+  }
   
+  export enum PropertyStatus {
+    ForSale = "ForSale",
+    ForRent = "ForRent",
+  }

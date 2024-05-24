@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import { Property } from '@/types/property';
+import { FilterFormData } from '@/app/components/Home/filter';
 
 
 type PropertyStore = {
@@ -11,7 +12,7 @@ type PropertyStore = {
     loading: boolean;
     totalPages: number;
     error: string | null; // Specify the type of `error` explicitly
-    fetchProperties: (page?: number) => Promise<void>; // Updated function signature
+    fetchProperties: (page?: number, filters?: FilterFormData ) => Promise<void>; // Updated function signature
     fetchPropertyCount: () => Promise<void>; // No arguments needed for this function
 };
 
@@ -24,12 +25,22 @@ type PropertyStore = {
     totalPages: 0,
     loading: false,
     error: null,
-    fetchProperties: async (page?: number) => {
+    fetchProperties: async (page?: number, filters?: FilterFormData) => {
         set({ loading: true, error: null });
         try {
           const currentPage = page !== undefined ? page : get().page;
           const currentPageSize = get().pageSize;
-          const response = await axios.get(`http://localhost:3000/property?page=${currentPage}&pageSize=${currentPageSize}`);
+          let url = `http://localhost:3000/property?page=${currentPage}&pageSize=${currentPageSize}`;
+      
+          // If filters are provided, add them to the URL
+          if (filters) {
+            // Assuming the filter criteria match the property attributes
+            if (filters.mainLocation) url += `&mainLocation=${encodeURIComponent(filters.mainLocation)}`;
+            if (filters.status) url += `&status=${encodeURIComponent(filters.status)}`;
+            if (filters.type) url += `&type=${encodeURIComponent(filters.type)}`;
+          }
+      
+          const response = await axios.get(url);
           set({ properties: response.data, loading: false });
           if (page !== undefined) {
             set({ page: currentPage });
@@ -38,6 +49,7 @@ type PropertyStore = {
           set({ error: error.message, loading: false });
         }
       },
+      
     fetchPropertyCount: async () => {
         set({ loading: true, error: null });
         try {
@@ -46,6 +58,7 @@ type PropertyStore = {
         } catch (error: any) { // Explicitly specify the type of error as 'any'
           set({ error: error.message, loading: false });
         }
+
       },
   }));
   

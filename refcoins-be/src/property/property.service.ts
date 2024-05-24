@@ -19,9 +19,25 @@ export class PropertyService {
     });
   }
 
-  async findAll(page: number = 1, pageSize: number = 4): Promise<Property[]> {  
+  
+
+  async findAll(
+    page: number = 1,
+    pageSize: number = 3,
+    type?: string,
+    status?: string,
+    location?: string,
+  ): Promise<Property[]> {  
     const skip = (page - 1) * pageSize;
+    const where: any = {}; 
+    
+    // Apply filters if provided
+    if (type) where.type = type as PropertyType; 
+    if (status) where.status = status as PropertyStatus; 
+    if (location) where.location = location as string;
+    
     return this.prisma.property.findMany({
+      where,
       take: pageSize,
       skip: skip,
     });
