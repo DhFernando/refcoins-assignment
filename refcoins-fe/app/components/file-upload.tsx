@@ -26,8 +26,8 @@ const FileUpload: React.FC<FileUploadProps> = ({ getImageUrl }) => {
         return;
       }
       setUploading(true)
-      let storageAccountName: string = 'refcoinproperties'
-      let sasToken ='sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2024-06-08T11:57:39Z&st=2024-05-25T03:57:39Z&spr=https,http&sig=e8TfvTWrpk8W0OSmAkfPkx16cVjAxOgpz5v9aG8B1rU%3D'
+      let storageAccountName: string = process.env.NEXT_PUBLIC_STORAGE_ACCOUNT_NAME as string
+      let sasToken = process.env.NEXT_PUBLIC_SAS_TOKEN as string
   
       const blobService = new BlobServiceClient(
         `https://${storageAccountName}.blob.core.windows.net/?${sasToken}`
@@ -58,7 +58,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ getImageUrl }) => {
         <h2>Upload Property Image </h2>
           {uploading ? <progress className="progress w-56"></progress> : (
             <img
-              src={selectedFileUrl ? selectedFileUrl : "https://refcoinproperties.blob.core.windows.net/properties/default-property-image.jpg"} 
+              src={selectedFileUrl ? selectedFileUrl : process.env.NEXT_PUBLIC_DEFAULT_PROPERTY_IMAGE as string} 
               alt="Shoes"
               className="my-5 rounded-xl"
             />

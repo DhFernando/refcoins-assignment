@@ -33,7 +33,7 @@ function AddNewProperty() {
   };
 
   const onSubmit: SubmitHandler<CreateProperty> = (data) => {  
-    if(!getValues('image')) data = {...data, image: 'https://refcoinproperties.blob.core.windows.net/properties/default-property-image.jpg' }
+    if(!getValues('image')) data = {...data, image: process.env.NEXT_PUBLIC_DEFAULT_PROPERTY_IMAGE as string }
 
     createNewProperty(data);
   }; 

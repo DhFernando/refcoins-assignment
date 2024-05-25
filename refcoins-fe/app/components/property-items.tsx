@@ -36,7 +36,7 @@ function PropertyItems() {
           <div className="relative">
             <figure className="px-8 pt-10">
             <img
-            src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
+            src={property.image}
             alt="Shoes"
             className="rounded-xl"
           />

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import { CreateProperty, Property } from '@/types/property';
-import { FilterFormData } from '@/app/components/Home/filter'; 
+import { FilterFormData } from '@/app/components/Home/filter';
 
 
 export enum PropertyCreatingState {
@@ -28,6 +28,7 @@ type PropertyStore = {
     totalPages: number;
     error: string | null; // Specify the type of `error` explicitly
     filterWith: FilterFormData;
+    selectedProperty: Property | null;
     fetchProperties: (page?: number, pageSize?: number) => Promise<void>; // Updated function signature
     fetchPropertyCount: () => Promise<void>; // No arguments needed for this function
     setPageSize:(num?: number)=> void;
@@ -36,6 +37,8 @@ type PropertyStore = {
     setPropertyCreatingState: (state: PropertyCreatingState)=> void;
     setPropertyDeletingState: (state: PropertyDeletingState)=> void;
     setFilterWith:(data: FilterFormData) => void;
+    fetchPropertyById: (id: string) => Promise<void>;
+    clearSelectedProperty: () => void;
 };
 
 
@@ -54,6 +57,7 @@ type PropertyStore = {
       status: '',
       type: '',
     },
+    selectedProperty: null,
     fetchProperties: async (page?: number, pageSize?: number) => {
         set({ loading: true, error: null });
         try {
@@ -123,6 +127,17 @@ type PropertyStore = {
       },
       setFilterWith:(data: FilterFormData) => {
         set(()=> ({filterWith: data}))
+      },
+      fetchPropertyById: async (id: string) => {
+        try {
+          const property = await axios.get(`http://localhost:3000/property/${id}`);
+          set(()=> ({ selectedProperty: property.data })) 
+        } catch (err) {
+          console.log(err); 
+        } 
+      },
+      clearSelectedProperty: () => {
+        set(() => ({ selectedProperty: null}))
       }
   }));
   
