@@ -27,13 +27,15 @@ type PropertyStore = {
     propertyDeletingState:PropertyDeletingState,
     totalPages: number;
     error: string | null; // Specify the type of `error` explicitly
-    fetchProperties: (page?: number, filters?: FilterFormData, pageSize?: number) => Promise<void>; // Updated function signature
+    filterWith: FilterFormData;
+    fetchProperties: (page?: number, pageSize?: number) => Promise<void>; // Updated function signature
     fetchPropertyCount: () => Promise<void>; // No arguments needed for this function
     setPageSize:(num?: number)=> void;
     createNewProperty:(propertyData: CreateProperty)=> Promise<void>;
     deleteProperty:(id: string)=> Promise<void>;
     setPropertyCreatingState: (state: PropertyCreatingState)=> void;
     setPropertyDeletingState: (state: PropertyDeletingState)=> void;
+    setFilterWith:(data: FilterFormData) => void;
 };
 
 
@@ -47,21 +49,24 @@ type PropertyStore = {
     error: null,
     propertyCreatingState: PropertyCreatingState.NOTSTARTED,
     propertyDeletingState: PropertyDeletingState.NOTSTARTED,
-    fetchProperties: async (page?: number, filters?: FilterFormData, pageSize?: number) => {
+    filterWith: {
+      mainLocation: '',
+      status: '',
+      type: '',
+    },
+    fetchProperties: async (page?: number, pageSize?: number) => {
         set({ loading: true, error: null });
         try {
           const currentPage = page !== undefined ? page : get().page;
           const currentPageSize = pageSize !== undefined ? pageSize :  get().pageSize;
           let url = `http://localhost:3000/property?page=${currentPage}&pageSize=${currentPageSize}`;
       
-          // If filters are provided, add them to the URL
-          if (filters) {
-            // Assuming the filter criteria match the property attributes
-            if (filters.mainLocation) url += `&mainLocation=${encodeURIComponent(filters.mainLocation)}`;
-            if (filters.status) url += `&status=${encodeURIComponent(filters.status)}`;
-            if (filters.type) url += `&type=${encodeURIComponent(filters.type)}`;
-          }
-      
+          
+        // Assuming the filter criteria match the property attributes
+        if (get().filterWith.mainLocation) url += `&location=${encodeURIComponent(get().filterWith.mainLocation)}`;
+        if (get().filterWith.status) url += `&status=${encodeURIComponent(get().filterWith.status)}`;
+        if (get().filterWith.type) url += `&type=${encodeURIComponent(get().filterWith.type)}`;
+         
           const response = await axios.get(url);
           set({ properties: response.data, loading: false });
           if (page !== undefined) {
@@ -78,8 +83,13 @@ type PropertyStore = {
       
     fetchPropertyCount: async () => {
         set({ loading: true, error: null });
-        try {
-          const response = await axios.get('http://localhost:3000/property/totalPropertyCount');
+        try { 
+          let url = 'http://localhost:3000/property/totalPropertyCount?';
+          if (get().filterWith.mainLocation) url += `&location=${encodeURIComponent(get().filterWith.mainLocation)}`;
+          if (get().filterWith.status) url += `&status=${encodeURIComponent(get().filterWith.status)}`;
+          if (get().filterWith.type) url += `&type=${encodeURIComponent(get().filterWith.type)}`;
+          
+          const response = await axios.get(url);
           set((state) => ({propertyCount: response.data, loading: false, totalPages: Math.ceil(response.data / state.pageSize) })); 
         } catch (error: any) { // Explicitly specify the type of error as 'any'
           set({ error: error.message, loading: false });
@@ -110,6 +120,9 @@ type PropertyStore = {
       },
       setPropertyDeletingState: (state: PropertyDeletingState)=> {
         set(()=> ({propertyDeletingState: state}))
+      },
+      setFilterWith:(data: FilterFormData) => {
+        set(()=> ({filterWith: data}))
       }
   }));
   

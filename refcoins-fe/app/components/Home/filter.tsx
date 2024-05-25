@@ -1,6 +1,7 @@
 'use client'
 import { usePropertyStore } from "@/store/property";
 import { PropertyStatus, PropertyType } from "@/types/property";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 export type FilterFormData = {
@@ -10,23 +11,24 @@ export type FilterFormData = {
 };
 
 function Filter() {
-  const { register, handleSubmit } = useForm<FilterFormData>();
-  const fetchProperties = usePropertyStore(state => state.fetchProperties);
+  const { register, handleSubmit, setValue } = useForm<FilterFormData>();
+  const setFilterWith = usePropertyStore(state => state.setFilterWith); 
+  const filterWith = usePropertyStore(state => state.filterWith); 
   const onSubmit = (data: FilterFormData) => { 
-    fetchProperties(1, data)
-    
-    // Call your fetchProperties function here with the selected values
+    setFilterWith(data);  
   };
+
+  useEffect(()=>{
+    setValue('mainLocation', filterWith.mainLocation)
+    setValue('status', filterWith.status)
+    setValue('type', filterWith.type)
+  },[])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-row bg-white p-3 rounded-md ">
-        <label className="form-control w-full max-w-xs mx-5">
-          <select {...register("mainLocation")} className="select select-bordered rounded-[5px] ">
-            <option value="">All Main Location</option> 
-          </select>
-        </label>
-
+         
+        <input {...register("mainLocation")} type="text" placeholder="Location" className="input input-bordered w-full max-w-xs" />
         <label className="form-control w-full max-w-xs mx-5">
           <select {...register("status")} className="select select-bordered">
             <option value="">All Status</option>

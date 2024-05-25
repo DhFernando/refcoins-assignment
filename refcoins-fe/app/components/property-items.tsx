@@ -5,18 +5,20 @@ import { useEffect } from "react";
 function PropertyItems() {
 
   const fetchProperties = usePropertyStore(state => state.fetchProperties)
+  const filterWith = usePropertyStore(state => state.filterWith)
   const fetchPropertyCount = usePropertyStore(state => state.fetchPropertyCount)
   const properties = usePropertyStore(state => state.properties)
   const loading = usePropertyStore(state => state.loading)
   const propertyCount = usePropertyStore(state => state.totalPages)
   const setPageSize = usePropertyStore(state => state.setPageSize)
-  
-  useEffect(()=>{
-    setPageSize(4)
-    fetchProperties()
-    fetchPropertyCount()
-  }, [])
+   
  
+  useEffect(()=>{
+    fetchProperties() 
+    setPageSize(4) 
+    fetchPropertyCount()
+  }, [filterWith])
+  
   if(loading || properties === null){
     return(
       <div className="flex  justify-center w-full min-h-64"> 

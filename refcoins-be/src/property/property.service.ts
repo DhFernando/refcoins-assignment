@@ -36,7 +36,7 @@ export class PropertyService {
 
     if (type) where.type = type as PropertyType;
     if (status) where.status = status as PropertyStatus;
-    if (location) where.location = location as string;
+    if (location) where.location = { contains: location, mode: 'insensitive' };
 
     try {
       return this.prisma.property.findMany({
@@ -52,15 +52,31 @@ export class PropertyService {
     }
   }
 
-  async totalPropertyCount(): Promise<number> {
+  async totalPropertyCount(
+    type?: string,
+    status?: string,
+    location?: string,
+  ): Promise<number> {
+    const where: any = {};
+
+    if (type) where.type = type as PropertyType;
+    if (status) where.status = status as PropertyStatus;
+    if (location) where.location = { contains: location, mode: 'insensitive' };
+
+    console.log('====================================');
+    console.log(where);
+    console.log('====================================');
+
     try {
-      return await this.prisma.property.count();
+      return await this.prisma.property.count({
+        where,
+      });
     } catch (error) {
       throw new BadRequestException('Failed to count properties');
     }
   }
 
-  async findOne(id: string): Promise<Property> {
+  async findOne(id: string): Promise<Property> { 
     try {
       const property = await this.prisma.property.findUnique({
         where: { id },

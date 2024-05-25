@@ -9,22 +9,18 @@ function AdminPropertyTable() {
   const deleteProperty = usePropertyStore(state => state.deleteProperty) 
   const propertyDeletingState = usePropertyStore(state => state.propertyDeletingState) 
   const propertyCreatingState = usePropertyStore(state => state.propertyCreatingState) 
+  const filterWith = usePropertyStore(state => state.filterWith) 
   const properties = usePropertyStore(state => state.properties)
+  const loading = usePropertyStore(state => state.loading)
 
   useEffect(()=>{
-    if(
-      (
-        propertyDeletingState === PropertyDeletingState.COMPLETED || 
-        propertyDeletingState === PropertyDeletingState.NOTSTARTED ||
-        propertyCreatingState === PropertyCreatingState.COMPLETED ||
-        propertyCreatingState === PropertyCreatingState.NOTSTARTED
-      )
-    ){ 
-      fetchProperties(undefined, undefined, 8) 
+    if( propertyDeletingState === PropertyDeletingState.COMPLETED || propertyCreatingState === PropertyCreatingState.COMPLETED   ){ 
+      fetchProperties(undefined, 8) 
     }
     
   },[propertyDeletingState, propertyCreatingState])
 
+  useEffect(()=>{ fetchProperties(undefined, 8) },[filterWith])
 
   const handleDeleteProperty = (id: string) => { 
     Swal.fire({
@@ -49,14 +45,13 @@ function AdminPropertyTable() {
   }
 
   return (
-    <div className="overflow-x-auto w-[70%]">
+    <div className="overflow-x-auto w-full">
       <table className="table">
         {/* head */}
         <thead>
           <tr>
-            
             <th>Property Title</th>
-            <th>Property Slug</th> 
+            <th>Property Location</th> 
             <th>Description</th>
             <th>Price</th>
             <th>Type</th>
@@ -66,7 +61,7 @@ function AdminPropertyTable() {
           </tr>
         </thead>
         <tbody> 
-          {properties ? (<>
+          {(properties && !loading)  ? (<>
             {properties.map((property, index) => (
               <tr key={index}> 
               <td>
@@ -81,14 +76,14 @@ function AdminPropertyTable() {
                   </div>
                   <div>
                     <div className="font-bold">{property.title}</div>
-                    <div className="text-sm opacity-50">{property.location}</div>
+                    <span className="badge badge-ghost badge-sm">
+                      {property.slug}
+                    </span> 
                   </div>
                 </div>
               </td>
-              <td> 
-                <span className="badge badge-ghost badge-sm">
-                   {property.slug}
-                </span>
+              <td>  
+                   {property.location} 
               </td> 
               <td className="max-w-60">
                  {property.description} 
@@ -110,7 +105,7 @@ function AdminPropertyTable() {
               </td>
             </tr>
             ))}
-          </>) : null}
+          </>) : (<span className="loading loading-dots loading-lg"></span>)}
           
            
         </tbody> 

@@ -9,21 +9,25 @@ function AdminStats() {
   const setPageSize = usePropertyStore(state => state.setPageSize)
   const propertyCount = usePropertyStore(state => state.propertyCount)
   const propertyDeletingState = usePropertyStore(state => state.propertyDeletingState)
-  const propertyCreatingState = usePropertyStore(state => state.propertyCreatingState)
-  setPageSize
+  const propertyCreatingState = usePropertyStore(state => state.propertyCreatingState) 
+  const filterWith = usePropertyStore(state => state.filterWith) 
+
   useEffect(()=>{
     if(
       propertyDeletingState === PropertyDeletingState.COMPLETED || 
-      propertyDeletingState === PropertyDeletingState.NOTSTARTED ||
-      propertyCreatingState === PropertyCreatingState.COMPLETED ||
-      propertyCreatingState === PropertyCreatingState.NOTSTARTED
+      propertyCreatingState === PropertyCreatingState.COMPLETED 
     ){
-      console.log('hey hey hey')
       setPageSize(8)
       fetchPropertyCount()
     }
      
   }, [propertyDeletingState, propertyCreatingState])
+
+
+  useEffect(()=>{ 
+    setPageSize(8)
+    fetchPropertyCount()
+  }, [filterWith])
 
   return (
     <div className="stats shadow stats-vertical px-10">

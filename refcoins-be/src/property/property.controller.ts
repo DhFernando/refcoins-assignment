@@ -13,8 +13,12 @@ export class PropertyController {
   }
 
   @Get('totalPropertyCount')
-  async totalPropertyCount() {
-    return await this.propertyService.totalPropertyCount()
+  async totalPropertyCount(
+    @Query('type') type: string, // Type filter
+    @Query('status') status: string, // Status filter
+    @Query('location') location: string,
+  ) {
+    return await this.propertyService.totalPropertyCount(type,status, location)
   }
 
   @Get()
