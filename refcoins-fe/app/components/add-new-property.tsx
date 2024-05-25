@@ -211,23 +211,31 @@ function AddNewProperty() {
                   </span>
                 </label>
 
-                <div className="flex justify-end mt-10">
-                  <button
-                    type="submit"
-                    className="btn btn-md bg-blue-600 text-white px-10"
-                  >
-                    Save Property
-                  </button>
-                  <button
-                    className="btn btn-md bg-red-400 text-white px-10"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      closeModal();
-                    }}
-                  >
-                    Close
-                  </button>
-                </div>
+                    {propertyCreatingState !== PropertyCreatingState.STARTED ? (
+                      <div className="flex justify-end mt-10">
+                        <button
+                            type="submit"
+                            className="btn btn-md bg-blue-600 text-white px-10"
+                          >
+                            Save Property
+                          </button>
+                          <button
+                            className="btn btn-md bg-red-400 text-white px-10"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              closeModal();
+                            }}
+                          >
+                            Close
+                        </button>
+                      </div>
+                    ): (
+                      <div className="flex justify-end mt-10">
+                        <button className="btn" disabled><span className="loading loading-dots loading-lg"></span> Creating</button>
+                      </div>
+                      
+                    )}
+                
               </form>
             </div>
             
