@@ -62,10 +62,7 @@ export class PropertyService {
     if (type) where.type = type as PropertyType;
     if (status) where.status = status as PropertyStatus;
     if (location) where.location = { contains: location, mode: 'insensitive' };
-
-    console.log('====================================');
-    console.log(where);
-    console.log('====================================');
+    
 
     try {
       return await this.prisma.property.count({

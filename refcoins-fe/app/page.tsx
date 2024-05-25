@@ -1,6 +1,6 @@
-import Filter from './components/Home/filter';  
+import Filter from './components/filter';  
 import Paginator from './components/Home/paginator';
-import PropertyItems from './components/property-items';
+import PropertyItems from './components/Home/property-items';
 
 export default function Home() { 
   return (

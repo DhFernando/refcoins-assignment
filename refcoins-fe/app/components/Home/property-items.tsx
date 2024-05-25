@@ -14,7 +14,6 @@ function PropertyItems() {
    
  
   useEffect(()=>{
-    console.log('hey')
     setPageSize(4) 
     fetchProperties()  
     fetchPropertyCount()

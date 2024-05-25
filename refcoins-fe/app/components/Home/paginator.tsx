@@ -18,7 +18,7 @@ function Paginator() {
         name="options"
         aria-label={(index+1).toString()}
         checked={page === index+1}
-        onClick={()=>fetchProperties(index+1)}
+        onChange={()=>fetchProperties(index+1)}
       />
       ))}
     </div>

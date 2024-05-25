@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
-import FileUpload from './file-upload';
+import FileUpload from './admin/file-upload';
 import { CreateProperty, PropertyType } from '@/types/property';
 import { PropertyCreatingState, usePropertyStore } from '@/store/property';
 import { PropertyStatus } from '../../types/property';
@@ -157,6 +157,7 @@ function AddNewProperty() {
                     <select
                       className="select select-bordered"
                       {...register('type', { required: true })}
+                      defaultValue=""
                     >
                       <option value="" disabled selected>
                         Type
@@ -177,6 +178,7 @@ function AddNewProperty() {
                     <select
                       className="select select-bordered"
                       {...register('status', { required: true })}
+                      defaultValue=""
                     >
                       <option value="" disabled selected>
                         Status

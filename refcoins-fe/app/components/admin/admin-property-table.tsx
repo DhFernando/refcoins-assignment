@@ -42,6 +42,24 @@ function AdminPropertyTable() {
     });
   };
 
+  const TableBodyImageTitleAndSlugDisplay = (title: string, slug: string, image: string) => {
+    return (
+      <span className="flex items-center gap-3">
+                      <span className="avatar">
+                        <span className="mask mask-squircle w-12 h-12">
+                          <img src={image} alt="Property" />
+                        </span>
+                      </span>
+                      <div>
+                        <span className="font-bold">{title}</span>
+                        <span className="badge badge-ghost badge-sm">
+                          {slug}
+                        </span>
+                      </div>
+                    </span>
+    )
+  } 
+
   return (
     <div className="overflow-x-auto w-full">
       <table className="table">
@@ -59,24 +77,12 @@ function AdminPropertyTable() {
           </tr>
         </thead>
         <tbody>
-          {(properties && !loading) ? (
+          {(properties && !loading) && (
             <>
               {properties.map((property) => (
                 <tr key={property.id}>
                   <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle w-12 h-12">
-                          <img src={property.image} alt="Property" />
-                        </div>
-                      </div>
-                      <div>
-                        <div className="font-bold">{property.title}</div>
-                        <span className="badge badge-ghost badge-sm">
-                          {property.slug}
-                        </span>
-                      </div>
-                    </div>
+                    {TableBodyImageTitleAndSlugDisplay(property.title, property.slug, property.image)}
                   </td>
                   <td>{property.location}</td>
                   <td className="max-w-60">{property.description}</td>
@@ -94,11 +100,10 @@ function AdminPropertyTable() {
                 </tr>
               ))}
             </>
-          ) : (
-            <span className="loading loading-dots loading-lg"></span>
-          )}
+          ) }
         </tbody>
       </table>
+      {(loading) && (<span className="loading loading-dots loading-lg"></span>)}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import { CreateProperty, Property } from '@/types/property';
-import { FilterFormData } from '@/app/components/Home/filter';
+import { FilterFormData } from '@/app/components/filter';
 
 
 export enum PropertyCreatingState {

@@ -30,7 +30,7 @@ function Filter() {
          
         <input {...register("mainLocation")} type="text" placeholder="Location" className="input input-bordered w-full max-w-xs" />
         <label className="form-control w-full max-w-xs mx-5">
-          <select {...register("status")} className="select select-bordered">
+          <select {...register("status")} className="select select-bordered" defaultValue="">
             <option value="">All Status</option>
             <option value={PropertyStatus.ForSale}>For Sale</option>
             <option value={PropertyStatus.ForRent}>For Rent</option> 
@@ -38,7 +38,7 @@ function Filter() {
         </label>
 
         <label className="form-control w-full max-w-xs mx-5">
-          <select {...register("type")} className="select select-bordered">
+          <select {...register("type")} className="select select-bordered" defaultValue="">
             <option value="">All Types</option>
             <option value={PropertyType.SingleFamily}>Single Family</option>
             <option value={PropertyType.Villa}>Villa</option> 
