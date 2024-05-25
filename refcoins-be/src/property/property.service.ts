@@ -40,6 +40,9 @@ export class PropertyService {
       where,
       take: pageSize,
       skip: skip,
+      orderBy: {
+        createdAt: 'desc'
+      }
     });
   }
    

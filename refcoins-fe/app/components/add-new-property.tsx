@@ -2,24 +2,18 @@
 
 import { useForm, SubmitHandler } from 'react-hook-form';
 import FileUpload from './file-upload';
-
-interface FormValues {
-  title: string;
-  slug: string;
-  location: string;
-  description: string;
-  price: string;
-  type: string;
-  status: string;
-  area: string;
-}
+import { CreateProperty, PropertyType } from '@/types/property';
+import { usePropertyStore } from '@/store/property';
+import { PropertyStatus } from '../../types/property';
 
 function AddNewProperty() {
+  const createNewProperty = usePropertyStore(state => state.createNewProperty)
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<CreateProperty>();
 
   const openModal = () => {
     const modal = document.getElementById(
@@ -30,8 +24,10 @@ function AddNewProperty() {
     }
   };
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<CreateProperty> = (data) => { 
+    console.log(data, 'vvv');
+    
+    createNewProperty(data);
   };
 
   const closeModal = () => {
@@ -42,6 +38,8 @@ function AddNewProperty() {
       modal.close();
     }
   };
+
+  const getImageUrl = (url: string) =>{ setValue("image", url) }
 
   return (
     <div>
@@ -54,7 +52,7 @@ function AddNewProperty() {
 
           <div className='flex w-full'> 
             <div className='w-[400px] mr-5 mt-10'>
-              <FileUpload /> 
+              <FileUpload getImageUrl={getImageUrl}/> 
             </div>
             <div className='w-full'>
               <form onSubmit={handleSubmit(onSubmit)}>
@@ -131,10 +129,10 @@ function AddNewProperty() {
                     <span className="label-text">Price</span>
                   </div>
                   <input
-                    type="text"
+                    type="number"
                     placeholder="Price"
                     className="input input-bordered w-full"
-                    {...register('price', { required: true })}
+                    {...register('price', { required: true, valueAsNumber: true })}
                   />
                   <span className="label-text-alt">
                     {errors.price && (
@@ -152,8 +150,8 @@ function AddNewProperty() {
                       <option value="" disabled selected>
                         Type
                       </option>
-                      <option value="Single Family">Single Family</option>
-                      <option value="Villa">Villa</option>
+                      <option value={PropertyType.SingleFamily}>Single Family</option>
+                      <option value={PropertyType.Villa}>Villa</option>
                     </select>
                     <div className="label">
                       <span className="label-text-alt">
@@ -172,8 +170,8 @@ function AddNewProperty() {
                       <option value="" disabled selected>
                         Status
                       </option>
-                      <option value="Sale">Sale</option>
-                      <option value="For Rent">For Rent</option>
+                      <option value={PropertyStatus.ForSale}>Sale</option>
+                      <option value={PropertyStatus.ForRent}>For Rent</option>
                     </select>
                     <div className="label">
                       <span className="label-text-alt">
@@ -190,10 +188,10 @@ function AddNewProperty() {
                     <span className="label-text">Property Area in sq ft</span>
                   </div>
                   <input
-                    type="text"
+                    type="number"
                     placeholder="sq ft"
                     className="input input-bordered w-full "
-                    {...register('area', { required: true })}
+                    {...register('area', { required: true, valueAsNumber: true })}
                   />
                   <span className="label-text-alt">
                     {errors.area && (

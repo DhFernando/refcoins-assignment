@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { Property } from '@/types/property';
+import { CreateProperty, Property } from '@/types/property';
 import { FilterFormData } from '@/app/components/Home/filter';
 
 
@@ -15,6 +15,7 @@ type PropertyStore = {
     fetchProperties: (page?: number, filters?: FilterFormData, pageSize?: number) => Promise<void>; // Updated function signature
     fetchPropertyCount: () => Promise<void>; // No arguments needed for this function
     setPageSize:(num?: number)=> void;
+    createNewProperty:(propertyData: CreateProperty)=> Promise<void>;
 };
 
 
@@ -65,5 +66,19 @@ type PropertyStore = {
         }
 
       },
+      createNewProperty: async (propertyData: CreateProperty) => {
+        try {
+          const response = await axios.post('http://localhost:3000/property', propertyData);
+          console.log('====================================');
+          console.log(propertyData, 'ooo');
+          console.log(response);
+          console.log('====================================');
+        } catch (error) {
+          console.log('====================================');
+          console.log(error);
+          console.log('====================================');
+        }
+        console.log(propertyData)
+      }
   }));
   

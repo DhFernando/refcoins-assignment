@@ -1,5 +1,5 @@
 export type Property = {
-    id: number;
+    id: string;
     title: string;
     image: string;
     slug: string;
@@ -10,6 +10,8 @@ export type Property = {
     status: PropertyStatus;
     area: number;
   };
+
+export type CreateProperty = Omit<Property, 'id'>;
 
 export enum PropertyType {
     SingleFamily = "SingleFamily",

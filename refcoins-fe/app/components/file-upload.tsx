@@ -3,7 +3,12 @@
 import { BlobServiceClient } from '@azure/storage-blob';
 import { useState, ChangeEvent } from 'react';  
 
-const FileUpload = () => {
+
+interface FileUploadProps {
+  getImageUrl: (url: string) => void;
+}
+ 
+const FileUpload: React.FC<FileUploadProps> = ({ getImageUrl }) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [selectedFileUrl, setSelectedFileUrl] = useState<string | null>(null);
     const [uploading, setUploading] = useState<boolean>(false);
@@ -36,6 +41,7 @@ const FileUpload = () => {
 
         await blobClient.uploadBrowserData(selectedFile, options);
         setSelectedFileUrl(blobClient.url)
+        getImageUrl(blobClient.url)
         setUploading(false)
         setSelectedFile(null)
 
