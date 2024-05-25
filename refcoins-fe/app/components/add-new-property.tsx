@@ -3,41 +3,49 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import FileUpload from './file-upload';
 import { CreateProperty, PropertyType } from '@/types/property';
-import { usePropertyStore } from '@/store/property';
+import { PropertyCreatingState, usePropertyStore } from '@/store/property';
 import { PropertyStatus } from '../../types/property';
+import { useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 function AddNewProperty() {
   const createNewProperty = usePropertyStore(state => state.createNewProperty)
+  const propertyCreatingState = usePropertyStore(state => state.propertyCreatingState)
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { errors },
+    getValues, 
+    reset,
+    formState: { errors,  },
   } = useForm<CreateProperty>();
+ 
 
   const openModal = () => {
-    const modal = document.getElementById(
-      'my_modal_1'
-    ) as HTMLDialogElement | null;
-    if (modal) {
-      modal.showModal();
-    }
-  };
-
-  const onSubmit: SubmitHandler<CreateProperty> = (data) => { 
-    console.log(data, 'vvv');
-    
-    createNewProperty(data);
+    const modal = document.getElementById( 'my_modal_1' ) as HTMLDialogElement | null;
+    if (modal)  modal.showModal(); 
   };
 
   const closeModal = () => {
-    const modal = document.getElementById(
-      'my_modal_1'
-    ) as HTMLDialogElement | null;
-    if (modal) {
-      modal.close();
-    }
+    const modal = document.getElementById( 'my_modal_1') as HTMLDialogElement | null;
+    if (modal) modal.close(); 
   };
+
+  const onSubmit: SubmitHandler<CreateProperty> = (data) => {  
+    if(!getValues('image')) data = {...data, image: 'https://refcoinproperties.blob.core.windows.net/properties/default-property-image.jpg' }
+
+    createNewProperty(data);
+  }; 
+  useEffect(()=>{
+    if(propertyCreatingState === PropertyCreatingState.COMPLETED){
+      Swal.fire({  position: "top-end", icon: "success", title: "Property has been saved", showConfirmButton: false, timer: 1500 }); 
+      reset() 
+      closeModal()
+    }
+    if(propertyCreatingState === PropertyCreatingState.FAILED){
+      Swal.fire({ position: "top-end", icon: "error", title: "Something Went Wrong", showConfirmButton: false, timer: 1500 }); 
+    }
+  },[propertyCreatingState, reset])
 
   const getImageUrl = (url: string) =>{ setValue("image", url) }
 

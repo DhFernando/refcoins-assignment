@@ -9,6 +9,7 @@ export type Property = {
     type: PropertyType;
     status: PropertyStatus;
     area: number;
+    createdAt: Date
   };
 
 export type CreateProperty = Omit<Property, 'id'>;

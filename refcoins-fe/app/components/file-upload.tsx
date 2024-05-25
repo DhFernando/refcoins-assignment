@@ -58,7 +58,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ getImageUrl }) => {
         <h2>Upload Property Image </h2>
           {uploading ? <progress className="progress w-56"></progress> : (
             <img
-              src={selectedFileUrl ? selectedFileUrl : "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"} 
+              src={selectedFileUrl ? selectedFileUrl : "https://refcoinproperties.blob.core.windows.net/properties/default-property-image.jpg"} 
               alt="Shoes"
               className="my-5 rounded-xl"
             />

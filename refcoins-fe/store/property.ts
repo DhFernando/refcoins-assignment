@@ -1,32 +1,50 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import { CreateProperty, Property } from '@/types/property';
-import { FilterFormData } from '@/app/components/Home/filter';
+import { FilterFormData } from '@/app/components/Home/filter'; 
 
+
+export enum PropertyCreatingState {
+  NOTSTARTED='NOTSTARTED',
+  STARTED='STARTED',
+  COMPLETED='COMPLETED',
+  FAILED='FAILED'
+}
+export enum PropertyDeletingState {
+  NOTSTARTED='NOTSTARTED',
+  STARTED='STARTED',
+  COMPLETED='COMPLETED',
+  FAILED='FAILED'
+}
 
 type PropertyStore = {
-    properties: Property[] | null;
+    properties: Property[];
     propertyCount: number;
     page: number;
     pageSize: number;
     loading: boolean;
+    propertyCreatingState:PropertyCreatingState,
+    propertyDeletingState:PropertyDeletingState,
     totalPages: number;
     error: string | null; // Specify the type of `error` explicitly
     fetchProperties: (page?: number, filters?: FilterFormData, pageSize?: number) => Promise<void>; // Updated function signature
     fetchPropertyCount: () => Promise<void>; // No arguments needed for this function
     setPageSize:(num?: number)=> void;
     createNewProperty:(propertyData: CreateProperty)=> Promise<void>;
+    deleteProperty:(id: string)=> Promise<void>;
 };
 
 
   export const usePropertyStore = create<PropertyStore>((set, get) => ({
-    properties: null,
+    properties: [],
     propertyCount: 0,
     pageSize: 3,
     page: 1,
     totalPages: 0,
     loading: false,
     error: null,
+    propertyCreatingState: PropertyCreatingState.NOTSTARTED,
+    propertyDeletingState: PropertyDeletingState.NOTSTARTED,
     fetchProperties: async (page?: number, filters?: FilterFormData, pageSize?: number) => {
         set({ loading: true, error: null });
         try {
@@ -53,7 +71,7 @@ type PropertyStore = {
       },
 
     setPageSize:(size?: number)=>{
-      set((state) => ({pageSize: size })); 
+      set(() => ({pageSize: size })); 
     },
       
     fetchPropertyCount: async () => {
@@ -68,17 +86,22 @@ type PropertyStore = {
       },
       createNewProperty: async (propertyData: CreateProperty) => {
         try {
-          const response = await axios.post('http://localhost:3000/property', propertyData);
-          console.log('====================================');
-          console.log(propertyData, 'ooo');
-          console.log(response);
-          console.log('====================================');
+          set(()=> ({propertyCreatingState: PropertyCreatingState.STARTED}))
+          await axios.post('http://localhost:3000/property', propertyData);
+          set(( )=>({  propertyCreatingState: PropertyCreatingState.COMPLETED })) 
+        } catch (error) {  
+          set(()=>({ propertyCreatingState: PropertyCreatingState.FAILED })) 
+        } 
+      },
+      deleteProperty: async (id: string) => {
+        try {
+          set(()=> ({propertyDeletingState: PropertyDeletingState.STARTED}))
+          await axios.delete(`http://localhost:3000/property/${id}`); 
+          set(()=> ({propertyDeletingState: PropertyDeletingState.COMPLETED}))
         } catch (error) {
-          console.log('====================================');
-          console.log(error);
-          console.log('====================================');
+          console.log(error)
+          set(()=> ({propertyDeletingState: PropertyDeletingState.FAILED}))
         }
-        console.log(propertyData)
       }
   }));
   

@@ -1,6 +1,6 @@
 'use client'
 
-import { usePropertyStore } from "@/store/property";
+import { PropertyCreatingState, PropertyDeletingState, usePropertyStore } from "@/store/property";
 import { useEffect } from "react";
 
 function AdminStats() {
@@ -8,12 +8,22 @@ function AdminStats() {
   const fetchPropertyCount = usePropertyStore(state => state.fetchPropertyCount)
   const setPageSize = usePropertyStore(state => state.setPageSize)
   const propertyCount = usePropertyStore(state => state.propertyCount)
+  const propertyDeletingState = usePropertyStore(state => state.propertyDeletingState)
+  const propertyCreatingState = usePropertyStore(state => state.propertyCreatingState)
   setPageSize
   useEffect(()=>{
-    setPageSize(8)
-    fetchPropertyCount()
-    
-  }, [])
+    if(
+      propertyDeletingState === PropertyDeletingState.COMPLETED || 
+      propertyDeletingState === PropertyDeletingState.NOTSTARTED ||
+      propertyCreatingState === PropertyCreatingState.COMPLETED ||
+      propertyCreatingState === PropertyCreatingState.NOTSTARTED
+    ){
+      console.log('hey hey hey')
+      setPageSize(8)
+      fetchPropertyCount()
+    }
+     
+  }, [propertyDeletingState, propertyCreatingState])
 
   return (
     <div className="stats shadow stats-vertical px-10">
