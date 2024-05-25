@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 function AddNewProperty() {
   const createNewProperty = usePropertyStore(state => state.createNewProperty)
   const propertyCreatingState = usePropertyStore(state => state.propertyCreatingState)
+  const setPropertyCreatingState = usePropertyStore(state => state.setPropertyCreatingState)
   const {
     register,
     handleSubmit,
@@ -41,9 +42,11 @@ function AddNewProperty() {
       Swal.fire({  position: "top-end", icon: "success", title: "Property has been saved", showConfirmButton: false, timer: 1500 }); 
       reset() 
       closeModal()
+      setPropertyCreatingState(PropertyCreatingState.NOTSTARTED)
     }
     if(propertyCreatingState === PropertyCreatingState.FAILED){
       Swal.fire({ position: "top-end", icon: "error", title: "Something Went Wrong", showConfirmButton: false, timer: 1500 }); 
+      setPropertyCreatingState(PropertyCreatingState.NOTSTARTED)
     }
   },[propertyCreatingState, reset])
 

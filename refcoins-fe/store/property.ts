@@ -32,6 +32,8 @@ type PropertyStore = {
     setPageSize:(num?: number)=> void;
     createNewProperty:(propertyData: CreateProperty)=> Promise<void>;
     deleteProperty:(id: string)=> Promise<void>;
+    setPropertyCreatingState: (state: PropertyCreatingState)=> void;
+    setPropertyDeletingState: (state: PropertyDeletingState)=> void;
 };
 
 
@@ -102,6 +104,12 @@ type PropertyStore = {
           console.log(error)
           set(()=> ({propertyDeletingState: PropertyDeletingState.FAILED}))
         }
+      },
+      setPropertyCreatingState: (state: PropertyCreatingState)=>{
+        set(()=> ({propertyCreatingState: state}))
+      },
+      setPropertyDeletingState: (state: PropertyDeletingState)=> {
+        set(()=> ({propertyDeletingState: state}))
       }
   }));
   
