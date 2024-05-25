@@ -1,6 +1,7 @@
 'use client';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
+import FileUpload from './file-upload';
 
 interface FormValues {
   title: string;
@@ -52,28 +53,8 @@ function AddNewProperty() {
           <h3 className="font-bold text-lg">Add New Property</h3>
 
           <div className='flex w-full'> 
-          <div className='w-[400px] mr-5 mt-10'>
-            <img
-            src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
-            alt="Shoes"
-            className="rounded-xl"
-          />
-          <label className="form-control w-full">
-                  <div className="label">
-                    <span className="label-text">Location</span>
-                  </div>
-                  <input
-                    type="file"
-                    placeholder="Location"
-                    className="input input-bordered w-full"
-                    {...register('location', { required: true })}
-                  />
-                  <span className="label-text-alt">
-                    {errors.location && (
-                      <p className="text-red-500">Location is required</p>
-                    )}
-                  </span>
-                </label>
+            <div className='w-[400px] mr-5 mt-10'>
+              <FileUpload /> 
             </div>
             <div className='w-full'>
               <form onSubmit={handleSubmit(onSubmit)}>
