@@ -1,17 +1,18 @@
 'use client';
 
-import { useForm, SubmitHandler } from 'react-hook-form';
-import FileUpload from './admin/file-upload';
-import { CreateProperty, PropertyType } from '@/types/property';
-import { PropertyCreatingState, usePropertyStore } from '@/store/property';
-import { PropertyStatus } from '../../types/property';
+import { useForm, SubmitHandler } from 'react-hook-form'; 
+import { CreateProperty, PropertyStatus, PropertyType } from '@/types/property';
+import { PropertyCreatingState, usePropertyStore } from '@/store/property'; 
 import { useEffect } from 'react';
 import Swal from 'sweetalert2';
+import FileUpload from './file-upload';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 function AddNewProperty() {
   const createNewProperty = usePropertyStore(state => state.createNewProperty)
   const propertyCreatingState = usePropertyStore(state => state.propertyCreatingState)
   const setPropertyCreatingState = usePropertyStore(state => state.setPropertyCreatingState)
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const {
     register,
     handleSubmit,
@@ -20,6 +21,8 @@ function AddNewProperty() {
     reset,
     formState: { errors,  },
   } = useForm<CreateProperty>();
+
+  
  
 
   const openModal = () => {
@@ -32,10 +35,18 @@ function AddNewProperty() {
     if (modal) modal.close(); 
   };
 
-  const onSubmit: SubmitHandler<CreateProperty> = (data) => {  
+  const onSubmit: SubmitHandler<CreateProperty> = async (data) => {  
+
+    if (!executeRecaptcha) {
+      console.log('executeRecaptcha is not defined');
+      return;
+    }
+    const gRecaptchaToken = await executeRecaptcha('inquirySubmit');
+
+
     if(!getValues('image')) data = {...data, image: process.env.NEXT_PUBLIC_DEFAULT_PROPERTY_IMAGE as string }
 
-    createNewProperty(data);
+    await createNewProperty(data, gRecaptchaToken);
   }; 
   useEffect(()=>{
     if(propertyCreatingState === PropertyCreatingState.COMPLETED){

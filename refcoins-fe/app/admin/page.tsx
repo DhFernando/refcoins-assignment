@@ -1,4 +1,5 @@
- import AddNewProperty from '../components/add-new-property' 
+ 
+import AddNewProperty from '../components/admin/add-new-property'
 import AdminPropertyTable from '../components/admin/admin-property-table'
 import AdminStats from '../components/admin/admin-stats' 
 import Filter from '../components/filter'

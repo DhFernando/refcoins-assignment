@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import axios from 'axios';
 import { CreateProperty, Property } from '@/types/property';
 import { FilterFormData } from '@/app/components/filter';
+import axiosInstance from '@/axiosInstance'; 
 
 
 export enum PropertyCreatingState {
@@ -32,7 +33,7 @@ type PropertyStore = {
     fetchProperties: (page?: number, pageSize?: number) => Promise<void>; // Updated function signature
     fetchPropertyCount: () => Promise<void>; // No arguments needed for this function
     setPageSize:(num?: number)=> void;
-    createNewProperty:(propertyData: CreateProperty)=> Promise<void>;
+    createNewProperty:(propertyData: CreateProperty, gRecaptchaToken: string)=> Promise<void>;
     deleteProperty:(id: string)=> Promise<void>;
     setPropertyCreatingState: (state: PropertyCreatingState)=> void;
     setPropertyDeletingState: (state: PropertyDeletingState)=> void;
@@ -63,7 +64,7 @@ type PropertyStore = {
         try {
           const currentPage = page !== undefined ? page : get().page;
           const currentPageSize = pageSize !== undefined ? pageSize :  get().pageSize;
-          let url = `http://localhost:3000/property?page=${currentPage}&pageSize=${currentPageSize}`;
+          let url = `/property?page=${currentPage}&pageSize=${currentPageSize}`;
       
           
         // Assuming the filter criteria match the property attributes
@@ -71,7 +72,7 @@ type PropertyStore = {
         if (get().filterWith.status) url += `&status=${encodeURIComponent(get().filterWith.status)}`;
         if (get().filterWith.type) url += `&type=${encodeURIComponent(get().filterWith.type)}`;
          
-          const response = await axios.get(url);
+          const response = await axiosInstance.get(url);
           set({ properties: response.data, loading: false });
           if (page !== undefined) {
             set({ page: currentPage });
@@ -88,31 +89,36 @@ type PropertyStore = {
     fetchPropertyCount: async () => {
         set({ loading: true, error: null });
         try { 
-          let url = 'http://localhost:3000/property/totalPropertyCount?';
+          let url = '/property/totalPropertyCount?';
           if (get().filterWith.mainLocation) url += `&location=${encodeURIComponent(get().filterWith.mainLocation)}`;
           if (get().filterWith.status) url += `&status=${encodeURIComponent(get().filterWith.status)}`;
           if (get().filterWith.type) url += `&type=${encodeURIComponent(get().filterWith.type)}`;
           
-          const response = await axios.get(url);
+          const response = await axiosInstance.get(url);
           set((state) => ({propertyCount: response.data, loading: false, totalPages: Math.ceil(response.data / state.pageSize) })); 
         } catch (error: any) { // Explicitly specify the type of error as 'any'
           set({ error: error.message, loading: false });
         }
 
       },
-      createNewProperty: async (propertyData: CreateProperty) => {
+      createNewProperty: async (propertyData: CreateProperty, gRecaptchaToken: string) => { 
         try {
-          set(()=> ({propertyCreatingState: PropertyCreatingState.STARTED}))
-          await axios.post('http://localhost:3000/property', propertyData);
-          set(( )=>({  propertyCreatingState: PropertyCreatingState.COMPLETED })) 
-        } catch (error) {  
+          const res = await axios.post('/api/recaptchaSubmit', { gRecaptchaToken }); 
+          if (res && res.data?.success && res.data?.score > 0.5) {
+            console.log('res.data?.score', res.data?.score);
+            set(()=> ({propertyCreatingState: PropertyCreatingState.STARTED}))
+            await axiosInstance.post('/property', propertyData);
+            set(( )=>({  propertyCreatingState: PropertyCreatingState.COMPLETED })) 
+          }
+        } catch (error) {
+          console.log(error);
           set(()=>({ propertyCreatingState: PropertyCreatingState.FAILED })) 
         } 
       },
       deleteProperty: async (id: string) => {
         try {
           set(()=> ({propertyDeletingState: PropertyDeletingState.STARTED}))
-          await axios.delete(`http://localhost:3000/property/${id}`); 
+          await axiosInstance.delete(`/property/${id}`); 
           set(()=> ({propertyDeletingState: PropertyDeletingState.COMPLETED}))
         } catch (error) {
           console.log(error)
@@ -130,7 +136,7 @@ type PropertyStore = {
       },
       fetchPropertyById: async (id: string) => {
         try {
-          const property = await axios.get(`http://localhost:3000/property/${id}`);
+          const property = await axiosInstance.get(`/property/${id}`);
           set(()=> ({ selectedProperty: property.data })) 
         } catch (err) {
           console.log(err); 

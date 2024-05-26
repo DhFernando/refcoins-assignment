@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import NavBar from "./components/navbar";
 import Footer from "./components/footer";
+import GoogleCaptchaWrapper from "./components/GoogleCaptchaWrapper";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +21,10 @@ export default function RootLayout({
     <html lang="en">
       <body  >
         <NavBar />
-            {children} 
+            <GoogleCaptchaWrapper>
+              {children} 
+            </GoogleCaptchaWrapper>
+            
          {/* <Footer /> */}
       </body>
      
