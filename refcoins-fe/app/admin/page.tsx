@@ -3,7 +3,7 @@ import AddNewProperty from '../components/admin/add-new-property'
 import AdminPropertyTable from '../components/admin/admin-property-table'
 import AdminStats from '../components/admin/admin-stats' 
 import Filter from '../components/filter'
-import Paginator from '../components/Home/paginator'
+import Paginator from '../components/paginator'
 
 function AddProperty() {
   return (

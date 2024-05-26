@@ -1,5 +1,5 @@
 import Filter from './components/filter';  
-import Paginator from './components/Home/paginator';
+import Paginator from './components/paginator';
 import PropertyItems from './components/Home/property-items';
 
 export default function Home() { 
